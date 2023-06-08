@@ -35,7 +35,15 @@ server.on('request',(req,res) =>
 {
     const item = req.url.split('/');
     // item = ['','friends','2'];
-    if(item[1] === "friends")
+    if(req.method === 'POST' && item[1]==="friends")
+    {
+        req.on('data',(data)=>{
+            const friend = data.toString(); //data is by default in Stream being converted to String here
+            console.log(`Request ${friend}`); //prints on terminal, server request received confirmation
+            friends.push(JSON.parse(friend)); //converts friend from Object to push in friends array
+        });
+    }
+    else if(req.method === 'GET' && item[1] === "friends")
     {
     res.statusCode = 200;
     res.setHeader('Content-Type','application/json');
@@ -56,7 +64,7 @@ server.on('request',(req,res) =>
     res.end(JSON.stringify(friends));   //can pass in end() too
     }
     }
-else if(item[1] === "message")
+else if(req.method === 'GET' && item[1] === "message")
 {
     res.statusCode = 200;
     res.setHeader('Content-Type','text/html');
