@@ -33,15 +33,16 @@ const server = http.createServer();
 //can handle like events on servers
 server.on('request',(req,res) =>
 {
-    const item = req.url.split('/');
+    const item = req.url.split('/');    //returns Strings string.split() function
     // item = ['','friends','2'];
     if(req.method === 'POST' && item[1]==="friends")
     {
-        req.on('data',(data)=>{
-            const friend = data.toString(); //data is by default in Stream being converted to String here
+        req.on('data',(data)=>{             // req object is a Readable Stream
+            const friend = data.toString(); //data is node buffer object(collection of raw bytes) by default in Stream being converted to String here
             console.log(`Request ${friend}`); //prints on terminal, server request received confirmation
-            friends.push(JSON.parse(friend)); //converts friend from Object to push in friends array
+            friends.push(JSON.parse(friend)); //converts friend from String to Object to push in friends array
         });
+        req.pipe(res);
     }
     else if(req.method === 'GET' && item[1] === "friends")
     {
